@@ -1,0 +1,12 @@
+[submodule "LeoECS/ecs"]
+	path = LeoECS/ecs
+	url = https://github.com/UniGameTeam/leo-ecs.git
+	branch = master
+[submodule "LeoECS/ecs-threads"]
+	path = LeoECS/ecs-threads
+	url = https://github.com/UniGameTeam/ecs-threads.git
+	branch = master
+[submodule "LeoECS/ecs-unityintegration"]
+	path = LeoECS/ecs-unityintegration
+	url = https://github.com/UniGameTeam/ecs-unityintegration.git
+	branch = master

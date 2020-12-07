@@ -15,7 +15,7 @@
         #region inspector
         
         [SerializeReference]
-        public List<LeoEcsSystemGroup> ecsSystems = new List<LeoEcsSystemGroup>();
+        public List<LeoEcsSystemsData> ecsSystems = new List<LeoEcsSystemsData>();
 
         public string systemsName = string.Empty;
 

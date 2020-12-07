@@ -4,7 +4,7 @@
     using Core.Runtime.Common;
 
     [Serializable]
-    public class EcsGroupVariant : VariantValue<LeoEcsSystemGroup,LeoEcsSystemGroupAsset,ILeoEcsSystemGroup>
+    public class EcsGroupVariant : VariantValue<LeoEcsSystemsData,LeoEcsSystemsDataAsset,ILeoEcsSystemsData>
     {
         
     }

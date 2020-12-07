@@ -1,46 +1,66 @@
 ﻿namespace UniModules.UniGame.ECS.Runtime.Nodes
 {
     using System;
-    using UniCore.Runtime.ObjectPool.Runtime.Extensions;
+    using Abctract;
+    using UnityEngine;
 
     [Serializable]
     public class WorldSystems
     {
-        public int        id;
-        public SystemsMap systems = new SystemsMap(8);
-
+        public static IUniEcsSystem EmptySystem = new EmptySystem();
+        
+        public int           id;
+        public SystemsMap    systemsCounter = new SystemsMap(8);
+        
         public WorldSystems(int worldId)
         {
             id = worldId;
         }
 
-        public bool Contain(int systemId) => systems.ContainsKey(systemId);
-        
-        public int AddSystem(int systemId)
+        public IUniEcsSystem GetSystem(int systemId)
         {
-            if (!systems.TryGetValue(systemId, out var systemCounter))
+            return !Contain(systemId) ? EmptySystem : systemsCounter[systemId].ecsSystem;
+        }
+        
+        public bool Contain(int systemId) => systemsCounter.ContainsKey(systemId);
+        
+        public int Increase(int systemId)
+        {
+            if (!systemsCounter.TryGetValue(systemId, out var systemCounter))
             {
-                systemCounter     = new SystemCounter().Initialize(systemId);
-                systems[systemId] = systemCounter;
+                return 0;
             }
-
             return systemCounter.Increase();
         }
 
-        public int RemoveSystem(int systemId)
+        public IUniEcsSystem RegisterEcsSystems(IUniEcsSystem ecsSystems)
         {
-            if (!systems.TryGetValue(systemId, out var systemCounter))
+            var systemId = ecsSystems.Id;
+            if (systemsCounter.TryGetValue(systemId, out var systemCounter))
             {
-                return 0;
+                Debug.LogError($"ECS SYSTEM with Type {ecsSystems.GetType().Name} ID {ecsSystems.Id} EXISTS");
+                return null;
+            }
+            
+            systemsCounter[systemId] = new EcsSystemCounter().Initialize(ecsSystems);
+            return ecsSystems;
+        }
+        
+        public bool RemoveSystem(int systemId)
+        {
+            if (!systemsCounter.TryGetValue(systemId, out var systemCounter))
+            {
+                return true;
             }
             var counter = systemCounter.Decrease();
             if (counter <= 0)
             {
-                systemCounter.Despawn();
-                systems.Remove(systemId);
+                systemCounter.Release();
+                var result =systemsCounter.Remove(systemId);
+                return result;
             }
 
-            return counter;
+            return false;
         }
         
         public override int GetHashCode() => id;

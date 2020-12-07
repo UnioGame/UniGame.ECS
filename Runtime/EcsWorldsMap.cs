@@ -1,8 +1,10 @@
 ﻿namespace UniModules.UniGame.ECS.Runtime
 {
+    using System;
     using System.Collections.Generic;
     using Abctract;
     using Nodes;
+    using UnityEngine;
 
     public static class EcsWorldsMap 
     {
@@ -16,16 +18,46 @@
             _worldSystems?.Clear();
         }
 
-        public static bool HasSystem(int world, int systemId) => _worldSystems.TryGetValue(world, out var systems) && systems.Contain(systemId);
+        public static bool ContainsSystem(int world, int systemId) => _worldSystems.TryGetValue(world, out var systems) && systems.Contain(systemId);
         
-        public static int RegisterSystem(int worldId, int systemId)
+        public static (IUniEcsSystem ecsSystem,bool isNew) RegisterUsage(int worldId,int systemId, Func<IUniEcsSystem> factory)
         {
-            return _worldSystems.TryGetValue(worldId, out var systems) ? systems.AddSystem(systemId) : 0;
+            var world    = GetWorldSystems(worldId);
+            if (world.Contain(systemId))
+            {
+                world.Increase(systemId);
+                return (world.GetSystem(systemId),false);
+            }
+
+            return (RegisterSystem(worldId, factory()),true);
         }
         
-        public static int RemoveSystem(int worldId, int systemId)
+        public static int RegisterUsage(int worldId, int systemId)
         {
-            return _worldSystems.TryGetValue(worldId, out var systems) ? systems.RemoveSystem(systemId) : 0;
+            var world = GetWorldSystems(worldId);
+            return world.Increase(systemId);
+        }
+        
+        public static IUniEcsSystem RegisterSystem(int worldId, IUniEcsSystem system)
+        {
+            var world = GetWorldSystems(worldId);
+            return world.RegisterEcsSystems(system);
+        }
+        
+        public static bool RemoveSystem(int worldId,int systemsId)
+        {
+            var world = GetWorldSystems(worldId);
+            return world.RemoveSystem(systemsId);
+        }
+
+        public static WorldSystems GetWorldSystems(int worldId)
+        {
+            if (!_worldSystems.TryGetValue(worldId, out var world))
+            {
+                Debug.LogError($"ECS WORLD with id {worldId} NOT FROUND");
+            }
+
+            return world;
         }
         
         public static bool DestroyWorld<TWorld>(this IUniEcsWorld<TWorld> world)

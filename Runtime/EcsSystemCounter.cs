@@ -2,18 +2,22 @@
 {
     using System;
     using System.Threading;
+    using Abctract;
     using UniCore.Runtime.ObjectPool.Runtime.Interfaces;
+    using UnityEngine;
 
     [Serializable]
-    public class SystemCounter : IPoolable
+    public class EcsSystemCounter : IPoolable
     {
-        public int id;
-        public int counter;
-
-        public SystemCounter Initialize(int counterId)
+        public int            counter;
+        
+        [SerializeReference]
+        public IUniEcsSystem ecsSystem;
+        
+        public EcsSystemCounter Initialize(IUniEcsSystem systems)
         {
-            id      = counterId;
-            counter = 0;
+            counter    = 1;
+            ecsSystem = systems;
             return this;
         }
 
@@ -31,17 +35,9 @@
 
         public void Release()
         {
-            id      = 0;
             counter = 0;
+            ecsSystem = null;
         }
         
-        public override int GetHashCode() => id;
-
-        public override bool Equals(object obj)
-        {
-            if (obj is SystemCounter systemCounter)
-                return systemCounter.id == id;
-            return base.Equals(obj);
-        }
     }
 }

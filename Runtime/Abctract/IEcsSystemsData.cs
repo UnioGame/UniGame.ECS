@@ -4,18 +4,14 @@
     using System.Collections.Generic;
     using Core.Runtime.Interfaces;
 
-    public interface IEcsSystemGroup<TGroup,TSystem> : 
-        ILifeTimeContext,
-        IValidator, 
-        IDisposable
-        where TGroup : IEcsSystemGroup<TGroup,TSystem>
+    public interface IEcsSystemsData<TGroup,TSystem> : 
+        IValidator 
+        where TGroup : IEcsSystemsData<TGroup,TSystem>
     {
-        int Id { get; }
-
         string                 GroupName  { get; }
         
         IReadOnlyList<TSystem> EcsSystems { get; }
         
-        IReadOnlyList<TGroup>  SubGroups  { get; }
+        IReadOnlyList<TGroup>  Groups  { get; }
     }
 }

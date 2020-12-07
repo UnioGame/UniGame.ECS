@@ -4,7 +4,7 @@
     using Core.Runtime.DataStructure;
 
     [Serializable]
-    public class SystemsMap : SerializableDictionary<int, SystemCounter>
+    public class SystemsMap : SerializableDictionary<int, EcsSystemCounter>
     {
         public SystemsMap(int capacity) : base(capacity)
         {

@@ -8,7 +8,6 @@ namespace UniModules.UniGame.ECS.SimplaeDemo.Systems
 
     [Serializable]
     public class MotionDirectionSystem : IEcsRunSystem
-        //, IEcsInitSystem
     {
         [SerializeField] public float changeDirectionDelay = 2f;
 

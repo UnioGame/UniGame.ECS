@@ -8,22 +8,13 @@ namespace UniModules.UniGame.ECS.SimplaeDemo.Systems
 
     [Serializable]
     public class MotionTargetSystem : IEcsRunSystem
-        //, IEcsInitSystem
     {
         private readonly EcsWorld                                                                 _world    = null;
 
-        //[EcsIgnoreInject]
         private EcsFilter<MovementDataComponent, MovementTargetComponent> _ecsFilter = null;
-        
-        public void Init()
-        {
-            _ecsFilter = _world.GetFilter(typeof(EcsFilter<MovementDataComponent, MovementTargetComponent>), true) 
-                as EcsFilter<MovementDataComponent, MovementTargetComponent>;
-        }
-        
+
         public void Run()
         {
-            
             foreach (var id in _ecsFilter)
             {
                 var     entity       = _ecsFilter.GetEntity(id);

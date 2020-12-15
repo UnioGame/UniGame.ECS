@@ -1,18 +1,20 @@
 ﻿namespace UniModules.UniGame.ECS.Leo.Runtime.Nodes
 {
+    using System;
     using Core.Runtime.DataFlow.Interfaces;
     using Core.Runtime.Interfaces;
     using Cysharp.Threading.Tasks;
+    using GameFlow.GameFlow.Runtime.Nodes.States;
     using global::UniGame.UniNodes.NodeSystem.Runtime.Attributes;
     using global::UniGame.UniNodes.NodeSystem.Runtime.Core;
     using Leopotam.Ecs;
     using UniCore.Runtime.Common;
     using UniCore.Runtime.ObjectPool.Runtime;
-    using UniGameFlow.Nodes.Runtime.States;
     using UniGameFlow.NodeSystem.Runtime.Core.Attributes;
+    using UniRx;
 
     [CreateNodeMenu(menuName:"Leo/LeoWorldSource",nodeName = "LeoWorldSource")]
-    public class LeoWorldAsyncStateSource : AsyncStateUniNode
+    public class LeoWorldAsyncStateSource : RxStateNode
     {
         #region inspector
 
@@ -25,27 +27,28 @@
         
         private EcsWorld _world;
         
-        public override async UniTask<AsyncStatus> ExecuteStateAsync(IContext value)
+        public override IObservable<Unit> ExecuteState(IContext value, ILifeTime lifeTime)
         {
-            var lifeTime = value.LifeTime;
             _world = ActivateWorld(lifeTime);
             
             value.Publish(_world);
             
             PublishToken(GetPort(nameof(output)));
 
-            await UniTask.WaitWhile(() => IsActive);
+            UniTask.WaitWhile(() => IsActive);
             
-            return AsyncStatus.Succeeded;
+            return Observable.Return(Unit.Default);
         }
 
-        public override async UniTask ExitAsync(IContext data)
+        public override void ExitState()
         {
-            if (destroyWorldOnExit)
+            if (!destroyWorldOnExit)
             {
-                _world?.DestroyWorld();
-                _world = null; 
+                return;
             }
+
+            _world?.DestroyWorld();
+            _world = null;
         }
 
         private EcsWorld ActivateWorld(ILifeTime lifeTime)

@@ -8,6 +8,7 @@
     using Core.EditorTools.Editor.Tools;
     using Leopotam.Ecs;
     using Runtime;
+    using UniCore.EditorTools.Editor.Utility;
     using UniCore.Runtime.ReflectionUtils;
     using UnityEditor;
 
@@ -24,6 +25,8 @@
             var data = gameSystemAsset.systemsData;
             //update asset systems
             data.systems = systems;
+            gameSystemAsset.MarkDirty();
+            AssetDatabase.Refresh();
         }
 
         private static List<IEcsSystem> GetAllSystems()

@@ -26,6 +26,8 @@ namespace UniModules.UniGame.ECS.SimplaeDemo.Systems
 
         public void Init()
         {
+            if (!prefab) return;
+            
             for (var i = 0; i < amount; i++)
             {
                 var instance  = Object.Instantiate(prefab);

@@ -9,6 +9,10 @@
     [Serializable]
     public class EcsSystemsData : IEcsSystemsData
     {
+#if ODIN_INSPECTOR
+        [Sirenix.OdinInspector.InlineProperty]
+        [Sirenix.OdinInspector.ListDrawerSettings(Expanded = true)]
+#endif
         [SerializeReference]
         public List<IEcsSystem> systems = new List<IEcsSystem>();
 

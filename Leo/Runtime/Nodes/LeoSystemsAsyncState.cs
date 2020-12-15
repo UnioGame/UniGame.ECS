@@ -2,15 +2,16 @@
 
 namespace UniModules.UniGame.ECS.Leo.Runtime.Nodes
 {
+    using System;
+    using Core.Runtime.DataFlow.Interfaces;
     using Core.Runtime.Interfaces;
-    using Cysharp.Threading.Tasks;
+    using GameFlow.GameFlow.Runtime.Nodes.States;
     using Leopotam.Ecs;
-    using UniGameFlow.Nodes.Runtime.States;
     using UniGameFlow.NodeSystem.Runtime.Core.Attributes;
     using UniRx;
 
     [CreateNodeMenu(menuName:"Leo/EcsSystems",nodeName = "EcsSystems")]
-    public class LeoSystemsAsyncState : AsyncStateUniNode
+    public class LeoSystemsAsyncState : RxStateNode
     {
 #if ODIN_INSPECTOR
         [Sirenix.OdinInspector.InlineProperty]
@@ -22,23 +23,18 @@ namespace UniModules.UniGame.ECS.Leo.Runtime.Nodes
         private EcsWorld _world;
         private bool     _activate = false;
         
-        public override async UniTask<AsyncStatus> ExecuteStateAsync(IContext value)
+        public override IObservable<Unit> ExecuteState(IContext value,ILifeTime lifeTime)
         {
-            _world = await value.Receive<EcsWorld>().First();
+            var observable = value.Receive<EcsWorld>()
+                .Do(ActivateSystems)
+                .AsUnitObservable();
 
-            ActivateSystems(_world);
-            
-            var tokenLifeTime = Token.LifeTime;
-            await UniTask.WaitWhile(() => IsActive).
-                WithCancellation(tokenLifeTime.AsCancellationToken());
-
-            return AsyncStatus.Succeeded;
+            return observable;
         }
 
-        public override async UniTask ExitAsync(IContext data)
+        public override void ExitState()
         {
-            var systems = systemsData.Systems;
-            foreach (var system in systems)
+            foreach (var system in systemsData.Systems)
             {
                 _world?.DisableSystem(system.GetType());
             }
@@ -55,7 +51,7 @@ namespace UniModules.UniGame.ECS.Leo.Runtime.Nodes
             var systems       = systemsData.Systems;
             foreach (var system in systems)
             {
-                world.ActivateSystem(system.GetType());
+                world.ActivateSystem(system);
             }
 
         }

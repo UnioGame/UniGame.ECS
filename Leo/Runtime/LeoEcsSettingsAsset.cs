@@ -32,7 +32,8 @@ namespace UniModules.UniGame.ECS.Leo.Runtime
 
         public IEcsSystem Create(Type systemType)
         {
-            return Systems.FirstOrDefault(x => x.GetType() == systemType);
+            var system = Systems.FirstOrDefault(x => x.GetType() == systemType);
+            return system;
         }
 
     }

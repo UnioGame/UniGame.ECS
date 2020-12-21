@@ -8,8 +8,7 @@ namespace UniModules.UniGame.ECS.Leo.Runtime
     using Leopotam.Ecs;
 
     [CreateAssetMenu(menuName = "GameFlow/Ecs/LeoEcs/LeoEcsSettingsAsset", fileName = nameof(LeoEcsSettingsAsset))]
-    public class LeoEcsSettingsAsset : ScriptableObject,
-        ILeoEcsSettingsAsset
+    public class LeoEcsSettingsAsset : ScriptableObject, ILeoEcsSettingsAsset
     {
 #if ODIN_INSPECTOR
         [Sirenix.OdinInspector.InlineProperty]
@@ -18,22 +17,18 @@ namespace UniModules.UniGame.ECS.Leo.Runtime
         [SerializeField]
         public EcsSystemsData systemsData = new EcsSystemsData();
 
-        public IReadOnlyList<IEcsSystem> Systems => systemsData.Systems;
+        public IReadOnlyList<IEcsSystemData> Systems => systemsData.Systems;
 
-        public virtual ILeoSystemsFactory CreateSystemsFactory()
-        {
-            return ScriptableObject.Instantiate(this);
-        }
+        public virtual ILeoSystemsFactory CreateSystemsFactory() => 
+            ScriptableObject.Instantiate(this);
 
-        public void Dispose()
-        {
-            Destroy(this);
-        }
+        public void Dispose() => Destroy(this);
 
         public IEcsSystem Create(Type systemType)
         {
-            var system = Systems.FirstOrDefault(x => x.GetType() == systemType);
-            return system;
+            var systems = systemsData.Systems;
+            var system  = systems.FirstOrDefault(x => x.System.GetType() == systemType);
+            return system.System;
         }
 
     }

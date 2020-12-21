@@ -1,5 +1,6 @@
 {
     "name": "unigame.gameflow.leoecs.editor",
+    "rootNamespace": "",
     "references": [
         "GUID:656c2c43d3cfe4855bd40e058874b0be",
         "GUID:a4c130907a12d4b3c838b1a6d0679acb",
@@ -11,6 +12,7 @@
         "GUID:cd684261d290aa74b9446c77c9cd0bb9",
         "GUID:9f8e6b2872ac2ca4683e584b9ba21f29",
         "GUID:7aa076d38fb14aa448159faea36ca289",
+        "GUID:f51ebe6a0ceec4240a699833d6309b23",
         "GUID:9e24947de15b9834991c9d8411ea37cf",
         "GUID:84651a3751eca9349aac36a66bba901b"
     ],

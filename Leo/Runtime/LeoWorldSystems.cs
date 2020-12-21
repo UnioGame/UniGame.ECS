@@ -13,9 +13,10 @@
 
     public class LeoWorldSystems : IDisposable
     {
-        private readonly EcsWorld                                         _world;
-        private readonly ILeoSystemsFactory                               _factory;
-        private readonly LifeTimeDefinition                               _lifeTime     = new LifeTimeDefinition();
+        private static   Type runSystemType = typeof(IEcsRunSystem);
+        private readonly EcsWorld                                      _world;
+        private readonly ILeoSystemsFactory                            _factory;
+        private readonly LifeTimeDefinition                            _lifeTime     = new LifeTimeDefinition();
         private readonly Dictionary<PlayerLoopTiming,List<EcsSystems>> _updateQueues = new Dictionary<PlayerLoopTiming, List<EcsSystems>>();
         
         public           int                 _id;
@@ -57,17 +58,24 @@
 
         public void ActivateSystem<TSystem>()
             where TSystem : IEcsSystem => ActivateSystem(typeof(TSystem));
-
-        public void ActivateSystem(IEcsSystem system, PlayerLoopTiming updateType = PlayerLoopTiming.Update)
+            
+        public void ActivateSystem(IEcsSystem system)
         {
-            ActivateSystem(system.GetType(),updateType, system); 
+            var systemType = system.GetType();
+            ActivateSystem(systemType,CreateSystemInfo(systemType), system); 
         }
 
-        public void ActivateSystem(Type systemType, PlayerLoopTiming updateType = PlayerLoopTiming.Update)
+        public void ActivateSystem(IEcsSystem system, LeoSystemData systemData )
         {
-            ActivateSystem(systemType,updateType, null);
+            var systemType = system.GetType();
+            ActivateSystem(systemType,systemData,system); 
         }
-        
+
+        public void ActivateSystem(Type systemType)
+        {
+            ActivateSystem(systemType, CreateSystemInfo(systemType),null);
+        }
+
         public bool DisableSystem(Type systemType)
         {
             var systemInfo = GetSystemInfo(systemType);
@@ -98,13 +106,15 @@
             _lifeTime.Terminate();
         }
 
-        private void ActivateSystem(Type systemType,PlayerLoopTiming updateType,IEcsSystem ecsSystem)
+        private void ActivateSystem(Type systemType,LeoSystemData data,IEcsSystem ecsSystem)
         {
             var systemInfo = GetSystemInfo(systemType);
+
             if (!systemInfo.IsActive)
             {
-                var system  = ecsSystem ?? _factory.Create(systemType);
+                systemInfo.data = data;
                 
+                var system  = ecsSystem ?? _factory.Create(systemType);
                 var systems = system is IEcsRunSystem ?
                     new EcsSystems(_world).Add(system,systemType.Name):
                     new EcsSystems(_world).Add(system);
@@ -113,10 +123,19 @@
                 systemInfo.ecsSystem = system;
                 systems.Init();
                 
-                _updateQueues[updateType].Add(systems);
+                _updateQueues[data.updateType].Add(systems);
             }
 
             systemInfo.counter++;
+        }
+
+        private LeoSystemData CreateSystemInfo(Type systemType)
+        {
+            var defaultSystemInfo = new LeoSystemData()
+            {
+                updateType = PlayerLoopTiming.Update,
+            };
+            return defaultSystemInfo;
         }
         
         private EcsSystemInfo GetSystemInfo(Type systemType)
@@ -140,7 +159,9 @@
             _systems.Remove(system);
             
             var ecsSystems = system.systems;
-            _updateQueues[system.updateType].Remove(ecsSystems);
+            var data       = system.data;
+            var updateType = data.updateType;
+            _updateQueues[updateType].Remove(ecsSystems);
             
             ecsSystems.Destroy();
             system.counter = 0;

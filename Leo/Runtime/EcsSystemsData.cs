@@ -8,16 +8,16 @@
 
     [Serializable]
     public class EcsSystemsData : IEcsSystemsData
-    {
+    {    
 #if ODIN_INSPECTOR
         [Sirenix.OdinInspector.InlineProperty]
         [Sirenix.OdinInspector.ListDrawerSettings(Expanded = true)]
 #endif
-        [SerializeReference]
-        public List<IEcsSystem> systems = new List<IEcsSystem>();
+        [SerializeField]
+        public List<EcsSystemData> systems = new List<EcsSystemData>();
 
         
-        public IReadOnlyList<IEcsSystem> Systems => systems;
+        public IReadOnlyList<IEcsSystemData> Systems => systems;
 
     }
 }

@@ -85,6 +85,12 @@ namespace UniModules.UniGame.ECS.Leo.Runtime
             var ecsWorld = GetWorld(world);
             ecsWorld.ActivateSystem(system);
         }
+        
+        public static void ActivateSystem(this EcsWorld world, IEcsSystem system, LeoSystemData systemInfo)
+        {
+            var ecsWorld = GetWorld(world);
+            ecsWorld.ActivateSystem(system);
+        }
 
         private static LeoWorldSystems GetWorld(EcsWorld world)
         {
@@ -100,7 +106,7 @@ namespace UniModules.UniGame.ECS.Leo.Runtime
             var ecsSystems = new EcsSystems(world);
             foreach (var system in mainSystems.Systems)
             {
-                ecsSystems.Add(system);
+                ecsSystems.Add(system.System);
             }
             
             ecsSystems.Init();

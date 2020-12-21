@@ -9,8 +9,7 @@ namespace UniModules.UniGame.ECS.Leo.Runtime
     using Leopotam.Ecs;
 
     [CreateAssetMenu(menuName = "GameFlow/Ecs/LeoEcs/EcsSystemsAsset",fileName = nameof(LeoSystemsAsset))]
-    public class LeoSystemsAsset : ScriptableObject,
-        IEcsSystemsData
+    public class LeoSystemsAsset : ScriptableObject, IEcsSystemsData
     {
 #if ODIN_INSPECTOR
         [Sirenix.OdinInspector.InlineProperty]
@@ -19,7 +18,7 @@ namespace UniModules.UniGame.ECS.Leo.Runtime
         [SerializeField]
         public EcsSystemsData systemsData = new EcsSystemsData();
         
-        public IReadOnlyList<IEcsSystem> Systems => systemsData.systems;
+        public IReadOnlyList<IEcsSystemData> Systems => systemsData.systems;
 
     }
 }

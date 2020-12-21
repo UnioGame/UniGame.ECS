@@ -51,7 +51,7 @@ namespace UniModules.UniGame.ECS.Leo.Runtime.Nodes
             var systems       = systemsData.Systems;
             foreach (var system in systems)
             {
-                world.ActivateSystem(system);
+                world.ActivateSystem(system.System,system.Info);
             }
 
         }

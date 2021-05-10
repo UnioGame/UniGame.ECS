@@ -1,4 +1,6 @@
-﻿namespace UniModules.UniGame.ECS.Leo.Editor
+﻿using UniModules.UniCore.Runtime.Utils;
+
+namespace UniModules.UniGame.ECS.Leo.Editor
 {
     using System;
     using System.Collections.Generic;

@@ -6,12 +6,10 @@ namespace UniModules.UniGame.ECS.Leo.Editor
     using System.Collections.Generic;
     using System.Linq;
     using Core.EditorTools.Editor;
-    using Core.EditorTools.Editor.AssetOperations;
-    using Core.EditorTools.Editor.Tools;
+    using UniModules.Editor;
     using Cysharp.Threading.Tasks;
     using Leopotam.Ecs;
     using Runtime;
-    using UniCore.EditorTools.Editor.Utility;
     using UniCore.Runtime.ReflectionUtils;
     using UnityEditor;
 

@@ -5,8 +5,8 @@
     using Core.Runtime.Interfaces;
     using Cysharp.Threading.Tasks;
     using GameFlow.GameFlow.Runtime.Nodes.States;
-    using global::UniGame.UniNodes.NodeSystem.Runtime.Attributes;
-    using global::UniGame.UniNodes.NodeSystem.Runtime.Core;
+    using global::UniModules.GameFlow.Runtime.Attributes;
+    using global::UniModules.GameFlow.Runtime.Core;
     using Leopotam.Ecs;
     using UniCore.Runtime.Common;
     using UniCore.Runtime.ObjectPool.Runtime;
